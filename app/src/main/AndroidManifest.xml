@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Launcher essentials -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.BIND_APPWIDGET" />
+
+    <queries>
+        <!-- AI assistants we deep-link into. Explicit <package> avoids
+             PackageManager visibility filtering on API 30+. -->
+        <package android:name="com.google.android.apps.bard" />
+        <package android:name="com.google.android.apps.googleassistant" />
+        <package android:name="com.google.android.googlequicksearchbox" />
+        <package android:name="com.openai.chatgpt" />
+        <package android:name="com.xai.grok" />
+        <package android:name="com.anthropic.claude" />
+        <package android:name="com.microsoft.copilot" />
+        <package android:name="com.perplexity.ai" />
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+        </intent>
+    </queries>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Minima"
+        android:theme="@style/Theme.Minima"
+        android:supportsRtl="true">
+
+        <!-- HOME launcher -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:stateNotNeeded="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- System Assist entry: long-press Home / swipe corner / Assistant gesture.
+             This is how a launcher becomes the "assistant layer" without
+             requiring a full VoiceInteractionService. -->
+        <activity
+            android:name=".ai.AssistHandlerActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Minima.Assist"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.ASSIST" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VOICE_COMMAND" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- Text-selection / share target: select text in any app -> "Ask Minima AI" -->
+        <activity
+            android:name=".ai.AskAiActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Minima.Assist">
+            <intent-filter>
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
+    </application>
+</manifest>
